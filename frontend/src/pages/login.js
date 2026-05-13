@@ -84,7 +84,7 @@ export default function LoginPage() {
       <Navbar />
 
       <div className="flex justify-center items-center py-16 px-4">
-        <div className="w-full max-w-md bg-white shadow-lg rounded-xl p-8">
+        <div className="w-full max-w-lg bg-white shadow-lg rounded-xl p-8">
 
           {/* Tabs */}
           <div className="flex mb-6 border-b">
