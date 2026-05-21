@@ -44,6 +44,8 @@ model User {
   lastName     String?
   role         Role    @default(USER)
   refreshToken String?
+  resetPasswordToken   String?
+  resetPasswordExpires DateTime?
 
   //Relations
   orders    Order[]

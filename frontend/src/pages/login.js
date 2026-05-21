@@ -16,6 +16,7 @@ import Footer from "../components/footer";
 // AUTH — useAuth provides login/signup connected to backend
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [activeTab, setActiveTab] = useState("login");
@@ -140,8 +141,14 @@ export default function LoginPage() {
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border rounded-lg mb-6 focus:outline-none focus:ring-2 focus:ring-black"
+                className="w-full px-4 py-3 border rounded-lg mb-2 focus:outline-none focus:ring-2 focus:ring-black"
               />
+
+              <div className="flex justify-end mb-6">
+                <Link href="/forgot-password" className="text-sm text-gray-500 hover:text-black hover:underline">
+                  Forgot Password?
+                </Link>
+              </div>
 
               <button
                 onClick={handleLogin}
