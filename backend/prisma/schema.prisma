@@ -46,9 +46,10 @@ model User {
   refreshToken String?
 
   //Relations
-  orders   Order[]
-  carts    Cart[]
-  payments Payment[]
+  orders    Order[]
+  carts     Cart[]
+  payments  Payment[]
+  addresses Address[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -203,4 +204,22 @@ model Payment {
   @@index([userId])
   @@index([transactionId])
   @@map("payments")
+}
+
+model Address {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  phone     String
+  street    String
+  city      String
+  state     String
+  pincode   String
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("addresses")
 }

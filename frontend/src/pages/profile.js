@@ -151,7 +151,9 @@ function Tracking() {
 }
 
 function Address() {
-  const { addresses, addAddress } = useAddress();
+  const { addresses, addAddress, removeAddress, setDefaultAddress, loading } = useAddress();
+  const [showForm, setShowForm] = useState(false);
+  const [formError, setFormError] = useState("");
   const [form, setForm] = useState({
     name: "",
     phone: "",
@@ -161,48 +163,147 @@ function Address() {
     pincode: "",
   });
 
-  const handleSubmit = () => {
-    addAddress(form);
-    setForm({ name:"", phone:"", street:"", city:"", state:"", pincode:"" });
+  // Client-side validation matching the backend DTO constraints
+  const validateForm = () => {
+    if (!form.name.trim()) return "Name is required";
+    if (!/^\d{10}$/.test(form.phone)) return "Phone must be exactly 10 digits";
+    if (!form.street.trim()) return "Street is required";
+    if (!form.city.trim()) return "City is required";
+    if (!form.state.trim()) return "State is required";
+    if (!/^\d{6}$/.test(form.pincode)) return "Pincode must be exactly 6 digits";
+    return null;
+  };
+
+  const handleSubmit = async () => {
+    const error = validateForm();
+    if (error) {
+      setFormError(error);
+      return;
+    }
+    setFormError("");
+    try {
+      await addAddress(form);
+      setForm({ name: "", phone: "", street: "", city: "", state: "", pincode: "" });
+      setShowForm(false);
+    } catch (err) {
+      setFormError(err.message || "Failed to save address");
+    }
+  };
+
+  const handleDelete = async (addressId) => {
+    if (!window.confirm("Are you sure you want to delete this address?")) return;
+    try {
+      await removeAddress(addressId);
+    } catch (err) {
+      console.error("Failed to delete address:", err);
+    }
+  };
+
+  if (loading) return <div>Loading addresses...</div>;
+
+  // Field labels for the form inputs
+  const fieldLabels = {
+    name: "Full Name",
+    phone: "Phone (10 digits)",
+    street: "Street Address",
+    city: "City",
+    state: "State",
+    pincode: "Pincode (6 digits)",
   };
 
   return (
     <>
-      <h2 className="text-2xl font-bold mb-4">Saved Addresses</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-2xl font-bold">Saved Addresses</h2>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="bg-black text-white px-4 py-2 rounded-md text-sm hover:bg-gray-800 transition"
+        >
+          {showForm ? "Cancel" : "+ Add Address"}
+        </button>
+      </div>
 
-      {addresses.length === 0 && (
-        <p className="text-gray-500 mb-4">No addresses saved yet.</p>
+      {/* ─── Address list ─── */}
+      {addresses.length === 0 && !showForm && (
+        <p className="text-gray-500 mb-4">No addresses saved yet. Add one to get started!</p>
       )}
 
-      {addresses.map((addr, i) => (
-        <div key={i} className="border p-4 rounded mb-3">
-          <p className="font-semibold">{addr.name}</p>
-          <p>{addr.street}, {addr.city}</p>
-          <p>{addr.state} - {addr.pincode}</p>
-          <p>{addr.phone}</p>
+      <div className="space-y-3 mb-6">
+        {addresses.map((addr) => (
+          <div
+            key={addr.id}
+            className={`border p-4 rounded-lg transition ${
+              addr.isDefault ? "border-black bg-gray-50" : ""
+            }`}
+          >
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="font-semibold">
+                  {addr.name}
+                  {addr.isDefault && (
+                    <span className="ml-2 inline-block bg-black text-white text-xs px-2 py-0.5 rounded-full">
+                      Default
+                    </span>
+                  )}
+                </p>
+                <p className="text-gray-600 text-sm mt-1">
+                  {addr.street}, {addr.city}
+                </p>
+                <p className="text-gray-600 text-sm">
+                  {addr.state} – {addr.pincode}
+                </p>
+                <p className="text-gray-600 text-sm">{addr.phone}</p>
+              </div>
+              <div className="flex flex-col gap-2 ml-4 shrink-0">
+                {!addr.isDefault && (
+                  <button
+                    onClick={() => setDefaultAddress(addr.id)}
+                    className="text-xs px-3 py-1 border rounded hover:bg-gray-100 transition"
+                  >
+                    Set as default
+                  </button>
+                )}
+                <button
+                  onClick={() => handleDelete(addr.id)}
+                  className="text-xs px-3 py-1 border border-red-200 text-red-600 rounded hover:bg-red-50 transition"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ─── Add address form (inline toggle) ─── */}
+      {showForm && (
+        <div className="border rounded-lg p-5 bg-gray-50">
+          <h3 className="text-lg font-semibold mb-3">Add New Address</h3>
+
+          {formError && (
+            <div className="mb-3 p-2 bg-red-50 border border-red-200 text-red-600 rounded text-sm">
+              {formError}
+            </div>
+          )}
+
+          {Object.entries(fieldLabels).map(([field, label]) => (
+            <input
+              key={field}
+              placeholder={label}
+              value={form[field]}
+              onChange={(e) => setForm({ ...form, [field]: e.target.value })}
+              className="w-full border px-3 py-2 rounded mb-2 bg-white"
+            />
+          ))}
+
+          <button
+            onClick={handleSubmit}
+            className="bg-black text-white px-5 py-2 rounded-md mt-1 hover:bg-gray-800 transition"
+          >
+            Save Address
+          </button>
         </div>
-      ))}
-
-      <h3 className="text-xl font-semibold mt-6 mb-2">Add New Address</h3>
-
-      {["name","phone","street","city","state","pincode"].map((field) => (
-        <input
-          key={field}
-          placeholder={field}
-          value={form[field]}
-          onChange={(e) =>
-            setForm({ ...form, [field]: e.target.value })
-          }
-          className="w-full border px-3 py-2 rounded mb-2"
-        />
-      ))}
-
-      <button
-        onClick={handleSubmit}
-        className="bg-black text-white px-4 py-2 rounded"
-      >
-        Save Address
-      </button>
+      )}
     </>
   );
 }
