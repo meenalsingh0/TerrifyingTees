@@ -1,0 +1,25 @@
+services:
+
+  backend:
+    build:
+      context: ./backend
+
+    container_name: terrifyingtees-backend
+
+    env_file:
+      - ./backend/.env
+
+    ports:
+      - "3001:3001"
+
+  frontend:
+    build:
+      context: ./frontend
+
+    container_name: terrifyingtees-frontend
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - backend
