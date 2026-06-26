@@ -13,9 +13,6 @@ services:
       - frontend
       - backend
 
-    networks:
-      - terrifyingtees-network
-
   backend:
     build:
       context: ./backend
@@ -27,9 +24,6 @@ services:
 
     expose:
       - "3001"
-    
-    networks:
-      - terrifyingtees-network
 
   frontend:
     build:
@@ -43,8 +37,3 @@ services:
     depends_on:
       - backend
     
-    networks:
-      - terrifyingtees-network
-
-networks:
-      - terrifyingtees-network
