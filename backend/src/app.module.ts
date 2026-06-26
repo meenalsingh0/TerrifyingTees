@@ -13,6 +13,7 @@ import { PaymentsModule } from './modules/payments/payments.module';
 import { APP_GUARD } from '@nestjs/core';
 import { CartModule } from './modules/cart/cart.module';
 import { AddressesModule } from './modules/addresses/addresses.module';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { AddressesModule } from './modules/addresses/addresses.module';
     ProductsModule,
     OrdersModule,
     PaymentsModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [
