@@ -1,5 +1,21 @@
 services:
 
+  nginx:
+    build:
+      context: ./nginx
+
+    container_name: terrifyingtees-nginx
+
+    ports:
+      - "80:80"
+
+    depends_on:
+      - frontend
+      - backend
+
+    networks:
+      - terrifyingtees-network
+
   backend:
     build:
       context: ./backend
@@ -9,8 +25,11 @@ services:
     env_file:
       - ./backend/.env
 
-    ports:
-      - "3001:3001"
+    expose:
+      - "3001"
+    
+    networks:
+      - terrifyingtees-network
 
   frontend:
     build:
@@ -18,8 +37,14 @@ services:
 
     container_name: terrifyingtees-frontend
 
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
 
     depends_on:
       - backend
+    
+    networks:
+      - terrifyingtees-network
+
+networks:
+      - terrifyingtees-network
