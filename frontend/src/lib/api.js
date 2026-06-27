@@ -9,7 +9,9 @@
 //   • Token storage in localStorage
 // ─────────────────────────────────────────────────────────
 
-const API_BASE = "/api/v1"; // proxied to http://localhost:3001/api/v1 via next.config.mjs
+const API_BASE =
+   `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
+//"/api/v1"; // proxied to http://localhost:3001/api/v1 via next.config.mjs
 
 // ─── Token helpers (localStorage) ───
 
