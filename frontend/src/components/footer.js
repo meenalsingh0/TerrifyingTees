@@ -53,7 +53,7 @@ export default function Footer() {
 
       </div>
 
-      <div className="border-t border-gray-700 py-4 text-center text-sm text-gray-400">
+      <div className="border-t border-hairline py-4 text-center text-sm text-gray-400">
         © {new Date().getFullYear()} TerrifyingTees. All rights reserved.
       </div>
     </footer>

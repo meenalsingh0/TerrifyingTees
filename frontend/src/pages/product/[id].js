@@ -4,6 +4,8 @@ import Footer from "../../components/footer";
 import { useCart } from "../../context/CartContext";
 import { useState, useEffect } from "react";
 import ProductCard from "@/components/productCard";
+import SizeSelector from "../../components/sizeSelector";
+import AddToCartButton from "../../components/addToCartButton";
 import { apiFetch } from "../../lib/api";
 
 export default function ProductPage() {
@@ -64,23 +66,12 @@ export default function ProductPage() {
           {/* SIZE SELECTOR */}
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-2">Select Size</h3>
-            <div className="flex gap-3">
-              {["S", "M", "L", "XL"].map((size) => (
-                <button
-                  key={size}
-                  onClick={() => setSelectedSize(size)}
-                  className={`
-          border px-4 py-2 rounded-md transition 
-          ${selectedSize === size
-                      ? "bg-black text-white border-black"
-                      : "hover:bg-black hover:text-white"
-                    }
-        `}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
+            <SizeSelector
+              sizes={["S", "M", "L", "XL"]}
+              value={selectedSize}
+              onChange={setSelectedSize}
+              label={`Select size for ${product.name}`}
+            />
           </div>
 
           {/* DESCRIPTION */}
@@ -89,17 +80,16 @@ export default function ProductPage() {
           </p>
 
           {/* ADD TO CART */}
-          <button
+          <AddToCartButton
             disabled={!selectedSize}
-            onClick={() => addToCart({ ...product, image: product.imageUrl || "/ichigo black tee.png", size: selectedSize })}
-            className={`w-full py-3 rounded-lg text-lg transition 
-    ${selectedSize
-                ? "bg-black text-white hover:bg-gray-800"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
-          >
-            {selectedSize ? "Add to Cart" : "Select a Size First"}
-          </button>
+            onAdd={() =>
+              addToCart({
+                ...product,
+                image: product.imageUrl || "/ichigo black tee.png",
+                size: selectedSize,
+              })
+            }
+          />
           
           {/* REVIEWS SECTION */}
           <div className="mt-10">

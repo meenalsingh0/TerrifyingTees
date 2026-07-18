@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-base text-ink antialiased;
+  }
+
+  ::selection {
+    @apply bg-accent text-white;
+  }
+}
+
+@layer utilities {
+  /* Display headline default: tight, uppercase. No font-weight — the
+     display face ships one inherently-heavy weight; synthetic bold would
+     smear its distressed texture. */
+  .headline {
+    @apply font-display uppercase tracking-tight leading-[0.95];
+  }
+}

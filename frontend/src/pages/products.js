@@ -23,7 +23,7 @@ export default function ProductsPage() {
       <Navbar />
 
       {/* HERO SECTION */}
-      <section className="text-center py-16 bg-gradient-to-b from-gray-50 to-white">
+      <section className="text-center py-16 bg-gradien">
         <h1 className="text-5xl font-extrabold tracking-tight mb-4">
           Our Collection
         </h1>
@@ -58,13 +58,15 @@ export default function ProductsPage() {
           <div className="text-center text-gray-500">No products found.</div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-            {products.map((p) => (
+            {products.map((p, i) => (
               <ProductCard
                 key={p.id}
+                index={i}
                 id={p.id}
                 name={p.name}
                 price={p.price}
                 image={p.imageUrl || "/ichigo black tee.png"}
+                hoverImage={p.hoverImageUrl}
               />
             ))}
           </div>

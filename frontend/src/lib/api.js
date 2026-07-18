@@ -10,8 +10,8 @@
 // ─────────────────────────────────────────────────────────
 
 const API_BASE =
-   `${process.env.NEXT_PUBLIC_API_URL}/api/v1`;
-//"/api/v1"; // proxied to http://localhost:3001/api/v1 via next.config.mjs
+   process.env.NEXT_PUBLIC_API_URL || "/api/v1";
+// env already includes /api/v1 — do NOT append it again
 
 // ─── Token helpers (localStorage) ───
 
